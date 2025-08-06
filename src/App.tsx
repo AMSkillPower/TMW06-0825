@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard';
 import TaskManager from './components/TaskManager';
 import TaskDetail from './components/TaskDetail';
 import SoftwareManager from './components/SoftwareManager';
+import UserManager from './components/UserManager';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -24,6 +25,7 @@ function App() {
     const path = location.pathname;
     if (path.startsWith('/task')) return 'task';
     if (path.startsWith('/software')) return 'software';
+    if (path.startsWith('/users')) return 'users';
     return 'dashboard';
   };
 
@@ -42,6 +44,7 @@ function App() {
         <Route path="/task" element={<TaskManager />} />
         <Route path="/task/:taskId" element={<TaskDetail />} />
         <Route path="/software" element={<SoftwareManager />} />
+        <Route path="/users" element={<UserManager />} />
       </Routes>
     </Layout>
   );

@@ -9,7 +9,8 @@ import {
   Menu,
   X,
   LogOut,
-  User as UserIcon
+  User as UserIcon,
+  Settings
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,21 +27,27 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange }) 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
-  { id: 'dashboard', icon: Home, label: 'Dashboard', count: null },
-  {
-    id: 'task',
-    icon: Users,
-    label: 'Task',
-    count: state.task.length
-  },
-  {
-    id: 'software',
-    icon: Package,
-    label: 'Software',
-    
+    { id: 'dashboard', icon: Home, label: 'Dashboard', count: null },
+    {
+      id: 'task',
+      icon: Users,
+      label: 'Task',
+      count: state.task.length
+    },
+    {
+      id: 'software',
+      icon: Package,
+      label: 'Software',
       count: state.software.length
-  }
-];
+    },
+    // Mostra la voce "Utenti" solo per gli utenti Main
+    ...(user?.role === 'Main' ? [{
+      id: 'users',
+      icon: Settings,
+      label: 'Utenti',
+      count: null
+    }] : [])
+  ];
 
 const handlePageChange = (page: string) => {
   navigate(page === 'dashboard' ? '/' : `/${page}`, { replace: true });

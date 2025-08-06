@@ -66,6 +66,47 @@ class AuthService {
       throw error;
     }
   }
+
+  async updateUser(id: number, userData: Partial<User> & { password?: string }): Promise<User> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Errore nell\'aggiornamento utente');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Errore nell\'aggiornamento utente:', error);
+      throw error;
+    }
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Errore nell\'eliminazione utente');
+      }
+    } catch (error) {
+      console.error('Errore nell\'eliminazione utente:', error);
+      throw error;
+    }
+  }
 }
 
 export const authService = new AuthService();

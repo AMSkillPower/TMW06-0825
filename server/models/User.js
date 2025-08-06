@@ -81,6 +81,7 @@ class User {
         SET fullName = @fullName,
             email = @email,
             role = @role,
+            isActive = @isActive,
             updatedAt = GETDATE()
         WHERE id = @id
       `;
@@ -89,7 +90,8 @@ class User {
         .input('id', sql.Int, id)
         .input('fullName', sql.NVarChar(100), userData.fullName)
         .input('email', sql.NVarChar(255), userData.email)
-        .input('role', sql.NVarChar(10), userData.role);
+        .input('role', sql.NVarChar(10), userData.role)
+        .input('isActive', sql.Bit, userData.isActive);
 
       // Se è fornita una nuova password, aggiornala
       if (userData.password) {
@@ -98,6 +100,7 @@ class User {
           SET fullName = @fullName,
               email = @email,
               role = @role,
+              isActive = @isActive,
               password = @password,
               updatedAt = GETDATE()
           WHERE id = @id
@@ -127,6 +130,20 @@ class User {
     }
   }
 
+  // Metodo per ottenere tutti gli utenti inclusi quelli disattivati (per admin)
+  static async getAllIncludingInactive() {
+    try {
+      const pool = await getPool();
+      const result = await pool.request().query(`
+        SELECT id, username, role, fullName, email, isActive, createdAt, updatedAt
+        FROM Users
+        ORDER BY fullName
+      `);
+      return result.recordset;
+    } catch (error) {
+      throw new Error(`Errore nel recupero utenti: ${error.message}`);
+    }
+  }
   static async validatePassword(plainPassword, hashedPassword) {
     try {
       let valide = false;

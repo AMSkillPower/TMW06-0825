@@ -36,7 +36,7 @@ router.post('/login', async (req, res) => {
 // GET /api/auth/users - Recupera tutti gli utenti
 router.get('/users', async (req, res) => {
   try {
-    const users = await User.getAll();
+    const users = await User.getAllIncludingInactive();
     res.json(users);
   } catch (error) {
     console.error('Errore nel recupero utenti:', error);
@@ -61,7 +61,7 @@ router.get('/users/:id', async (req, res) => {
 // POST /api/auth/users - Crea un nuovo utente
 router.post('/users', async (req, res) => {
   try {
-    const { username, password, role, fullName, email } = req.body;
+    const { username, password, role, fullName, email, isActive } = req.body;
 
     if (!username || !password || !fullName) {
       return res.status(400).json({ error: 'Username, password e nome completo sono obbligatori' });
@@ -72,7 +72,8 @@ router.post('/users', async (req, res) => {
       password,
       role: role || 'User',
       fullName,
-      email
+      email,
+      isActive: isActive !== undefined ? isActive : true
     });
 
     res.status(201).json(newUser);
@@ -85,7 +86,7 @@ router.post('/users', async (req, res) => {
 // PUT /api/auth/users/:id - Aggiorna un utente
 router.put('/users/:id', async (req, res) => {
   try {
-    const { fullName, email, role, password } = req.body;
+    const { fullName, email, role, password, isActive } = req.body;
 
     if (!fullName) {
       return res.status(400).json({ error: 'Nome completo è obbligatorio' });
@@ -95,7 +96,8 @@ router.put('/users/:id', async (req, res) => {
       fullName,
       email,
       role,
-      password // Opzionale
+      password, // Opzionale
+      isActive: isActive !== undefined ? isActive : true
     });
 
     if (!updatedUser) {
